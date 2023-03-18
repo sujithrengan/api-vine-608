@@ -72,6 +72,7 @@ def insert_auth(cur, conn, email, pwd_hash, is_email_verified, is_2fa_enabled):
         return auth_id
     except (Exception, psycopg2.DatabaseError) as error:
         print('auth insert failed:', error)
+        conn.rollback()
         return -1
 
 def insert_user(cur, conn, first_name, last_name, country, dob, username, auth_id):
@@ -85,6 +86,7 @@ def insert_user(cur, conn, first_name, last_name, country, dob, username, auth_i
         return user_id
     except (Exception, psycopg2.DatabaseError) as error:
         print('user insert failed:', error)
+        conn.rollback()
         return -1
 
 def insert_video_stats(cur, conn, views, likes, dislikes, comments):
@@ -97,6 +99,7 @@ def insert_video_stats(cur, conn, views, likes, dislikes, comments):
         return stats_id
     except (Exception, psycopg2.DatabaseError) as error:
         print('stats insert failed:', error)
+        conn.rollback()
         return -1
 
 def insert_video(cur, conn, title, description, video_url, age_restricted, is_private, video_length, uploaded_on, user_id, stats_id):
@@ -109,6 +112,7 @@ def insert_video(cur, conn, title, description, video_url, age_restricted, is_pr
         return video_id
     except (Exception, psycopg2.DatabaseError) as error:
         print('video insert failed:', error)
+        conn.rollback()
         return -1
 
 
@@ -350,17 +354,22 @@ def update_like_count(cur, conn, video_id):
 def sync_video_stats():
     conn, cur = connect_db()
     existing_videos = get_all_video_ids()
+    existing_topics = get_all_topic_ids()
     for video_id in existing_videos:
         update_comment_count(cur, conn, video_id)
         update_like_count(cur, conn, video_id)
+
+    for topic_id in existing_topics:
+        update_tag_count(cur, conn, topic_id)
+
     cur.close()
     conn.close()
 
-sync_video_stats()
+# inject_users(500)
+# inject_videos(300)
+# inject_followers(1000)
+# inject_likes(10000)
+# inject_comments(1000)
+# inject_tags(1000)
 
-# inject_users(100)
-# inject_videos(20)
-# inject_followers(100)
-# inject_likes(100)
-# inject_comments(100)
-# inject_tags(100)
+sync_video_stats()
