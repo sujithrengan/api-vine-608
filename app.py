@@ -53,8 +53,8 @@ url = os.environ.get("DATABASE_URL")
 try:
     connection = psycopg2.connect(url)
     print("Connected to the database ", url)
-except:
-    print("Unable to connect to the database")
+except Exception as e:
+    print("Unable to connect to the database", url, e)
 app = Flask(__name__)
 cors = CORS(app)
 # app.config['CORS_HEADERS'] = 'Content-Type'
