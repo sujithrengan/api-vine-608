@@ -50,7 +50,11 @@ VIDEOS_BY_TOPIC_READ = """SELECT video.video_id, title, views, username from vid
     topic.name = (%s) ORDER BY views DESC LIMIT 10;"""
 
 url = os.environ.get("DATABASE_URL")
-connection = psycopg2.connect(url)
+try:
+    connection = psycopg2.connect(url)
+    print("Connected to the database ", url)
+except:
+    print("Unable to connect to the database")
 app = Flask(__name__)
 cors = CORS(app)
 # app.config['CORS_HEADERS'] = 'Content-Type'
