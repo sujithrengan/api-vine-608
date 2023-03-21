@@ -365,11 +365,11 @@ def sync_video_stats():
     cur.close()
     conn.close()
 
-# inject_users(500)
+# inject_users(20)
 # inject_videos(300)
 # inject_followers(1000)
 # inject_likes(10000)
 # inject_comments(1000)
 # inject_tags(1000)
 
-sync_video_stats()
+# sync_video_stats()
